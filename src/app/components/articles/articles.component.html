@@ -1,0 +1,7 @@
+<ion-grid class="ion-padding">
+  <ion-row>
+    @for(article of articles; let i = $index; track article.title) {
+    <app-article [article]="article" [index]="i+1" />
+    }
+  </ion-row>
+</ion-grid>
