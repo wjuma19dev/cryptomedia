@@ -6,7 +6,7 @@ import {
   IArticlesByCategoryAndPage,
   INewsResponse,
 } from '../types/news.type';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +19,7 @@ export class NewsService {
   constructor(private http: HttpClient) {}
 
   private executeQuery(endpoint: string): Observable<INewsResponse> {
+    // console.log('Get HTTP realized');
     return this.http.get<INewsResponse>(`${this.BASE_URL}/${endpoint}`, {
       params: {
         apiKey: this.APY_KEY,
@@ -28,19 +29,28 @@ export class NewsService {
   }
 
   topHeadlines(): Observable<IArticle[]> {
-    return this.executeQuery('top-headlines').pipe(
-      map(({ articles }) => articles)
-    );
+    return this.getArticlesByCategory('business');
+    // return this.executeQuery('top-headlines').pipe(
+    //   map(({ articles }) => articles)
+    // );
   }
 
-  getTopHeadlinesByCategory(category: string): Observable<IArticle[]> {
-    return this.executeQuery(`top-headlines?category=${category}`).pipe(
-      map(({ articles }) => articles)
-    );
+  getTopHeadlinesByCategory(
+    category: string,
+    loadMode: boolean = false
+  ): Observable<IArticle[]> {
+    if (loadMode) {
+      return this.getArticlesByCategory(category);
+    }
+    if (this.articlesByCategoryAndPage[category]) {
+      return of(this.articlesByCategoryAndPage[category].articles);
+    }
+    return this.getArticlesByCategory(category);
   }
 
   private getArticlesByCategory(category: string): Observable<IArticle[]> {
-    if (Object.keys(this.articlesByCategoryAndPage[category])) {
+    if (Object.keys(this.articlesByCategoryAndPage).includes(category)) {
+      // Exist
     } else {
       this.articlesByCategoryAndPage[category] = {
         page: 0,
@@ -52,6 +62,19 @@ export class NewsService {
 
     return this.executeQuery(
       `/top-headlines?category=${category}&page=${page}`
-    ).pipe(map(({ articles }) => articles));
+    ).pipe(
+      map(({ articles }) => {
+        if (articles.length === 0)
+          return this.articlesByCategoryAndPage[category].articles;
+        this.articlesByCategoryAndPage[category] = {
+          page: page,
+          articles: [
+            ...this.articlesByCategoryAndPage[category].articles,
+            ...articles,
+          ],
+        };
+        return this.articlesByCategoryAndPage[category].articles;
+      })
+    );
   }
 }

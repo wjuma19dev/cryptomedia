@@ -27,7 +27,7 @@ export class Tab2Page implements OnInit {
       .getTopHeadlinesByCategory(this.categorySelected)
       .subscribe({
         next: (articles) => {
-          this.articles = [...this.articles, ...articles];
+          this.articles = [...articles];
           console.log(articles);
         },
         error: (error) => {
