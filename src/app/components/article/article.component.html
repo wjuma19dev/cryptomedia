@@ -13,7 +13,7 @@
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <ion-img class="ion-margin-bottom" [src]="article.urlToImage" />
+    <ion-img *ngIf="article.urlToImage" class="ion-margin-bottom" [src]="article.urlToImage" />
     {{ article.content }}
   </ion-card-content>
 </ion-card>
