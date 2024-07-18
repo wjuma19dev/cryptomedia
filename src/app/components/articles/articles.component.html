@@ -1,10 +1,10 @@
 <ion-grid class="ion-padding">
   <ion-row>
-    @for(article of articles; let i = $index; track article.publishedAt.toString()) {
-    <ion-col size-lg="3" size-md="4" size-xs="12" size-sm="3">
+
+    <ion-col *ngFor="let article of articles; let i = index" size-lg="3" size-md="4" size-xs="12" size-sm="3">
       <app-article [article]="article" [index]="i+1" />
 
     </ion-col>
-    }
+
   </ion-row>
 </ion-grid>

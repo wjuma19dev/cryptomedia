@@ -18,8 +18,8 @@ export class NewsService {
 
   constructor(private http: HttpClient) {}
 
+
   private executeQuery(endpoint: string): Observable<INewsResponse> {
-    // console.log('Get HTTP realized');
     return this.http.get<INewsResponse>(`${this.BASE_URL}/${endpoint}`, {
       params: {
         apiKey: this.APY_KEY,

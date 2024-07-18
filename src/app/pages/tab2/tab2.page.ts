@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { NewsService } from 'src/app/services/news.service';
 import { IArticle } from 'src/app/types/news.type';
 
@@ -48,6 +49,28 @@ export class Tab2Page implements OnInit {
         error: (error) => {
           console.error(error);
         },
+      });
+  }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+    this.newsService
+      .getTopHeadlinesByCategory(this.categorySelected, true)
+      .subscribe({
+        next: (articles) => {
+          if (
+            this.articles[this.articles.length - 1].title ===
+            articles[articles.length - 1].title
+          ) {
+            setTimeout(() => {
+              event.target.disabled = true;
+              return;
+            }, 100);
+          }
+
+          this.articles = articles;
+          event.target.complete();
+        },
+        error: (err) => console.log(err),
       });
   }
 }
