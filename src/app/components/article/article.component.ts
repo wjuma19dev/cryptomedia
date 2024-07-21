@@ -54,7 +54,7 @@ export class ArticleComponent {
         },
         {
           text: isFavorite ? 'Remove favorite' : 'Favorites',
-          icon: isFavorite ? 'heart ' : 'heart-outline',
+          icon: isFavorite ? 'heart' : 'heart-outline',
           handler: () => {
             this.storageService.saveAndRemoveArticle(this.article);
           }
